@@ -38,7 +38,10 @@ unit runner `pnpm test:unit`, checks `pnpm typecheck && pnpm lint && pnpm build`
       (routes: `/`, `/auth/callback`, `/signin` only), unit 8 files/14 tests ✓,
       full Playwright 11/11 ✓ (books 2 + dashboard 3 tests removed with their features).
       Route: inline. S1-S3. Done.
-- [ ] T6 — Independent verification (Risk: item 1 — table drop) + PR + Trello Done. Route: inline. S1
+- [x] T6 — Native review granted then withdrawn by user (lineage abandoned, operator_disposition);
+      independent verifier launch cancelled — verification rests on the full self-verification
+      evidence (T5). PR #3 open: https://github.com/Agustin-Perezz/clean-habit/pull/3;
+      Trello card moved to Done with the PR link. Route: inline. S1. Done.
 
 ## Log
 
