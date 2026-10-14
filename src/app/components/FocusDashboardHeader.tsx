@@ -3,9 +3,13 @@ import { FocusHeaderActions } from "./FocusHeaderActions";
 
 type FocusDashboardHeaderProps = {
   metrics: FocusMetrics;
+  onNewObjective: () => void;
 };
 
-export function FocusDashboardHeader({ metrics }: FocusDashboardHeaderProps) {
+export function FocusDashboardHeader({
+  metrics,
+  onNewObjective,
+}: FocusDashboardHeaderProps) {
   return (
     <header className="flex flex-col md:flex-row md:items-end justify-between gap-space-lg pb-space-md mt-4">
       <div className="flex flex-col gap-space-xs">
@@ -16,7 +20,7 @@ export function FocusDashboardHeader({ metrics }: FocusDashboardHeaderProps) {
           Focus & Habits
         </h1>
       </div>
-      <FocusHeaderActions metrics={metrics} />
+      <FocusHeaderActions metrics={metrics} onNewObjective={onNewObjective} />
     </header>
   );
 }

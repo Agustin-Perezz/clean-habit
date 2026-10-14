@@ -30,6 +30,39 @@ export type Database = {
         }
         Relationships: []
       }
+      objectives: {
+        Row: {
+          accent_color: string
+          category: string
+          created_at: string
+          habits: Json
+          id: string
+          priority_label: string | null
+          segments: Json
+          title: string
+        }
+        Insert: {
+          accent_color: string
+          category: string
+          created_at?: string
+          habits?: Json
+          id?: string
+          priority_label?: string | null
+          segments?: Json
+          title: string
+        }
+        Update: {
+          accent_color?: string
+          category?: string
+          created_at?: string
+          habits?: Json
+          id?: string
+          priority_label?: string | null
+          segments?: Json
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
