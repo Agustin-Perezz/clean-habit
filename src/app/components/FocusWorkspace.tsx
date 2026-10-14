@@ -1,13 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { useFocusDashboard } from "../hooks/useFocusDashboard";
-import { QUICK_INGEST_CATEGORIES } from "../mock-data";
+import type { FocusObjective } from "../mock-data";
 import { FocusDashboardHeader } from "./FocusDashboardHeader";
-import { FocusMetricsAside } from "./FocusMetricsAside";
-import { FocusObjectiveList } from "./FocusObjectiveList";
+import { FocusObjectiveBoard } from "./FocusObjectiveBoard";
+import { FocusWorkspaceDialog } from "./FocusWorkspaceDialog";
 import { FOCUS_CONTENT_MAX_WIDTH } from "./focus-layout";
+import type { FocusObjectiveDialogState } from "./focus-objective-dialog-types";
 
-export function FocusWorkspace() {
+type FocusWorkspaceProps = {
+  initialObjectives: readonly FocusObjective[];
+};
+
+export function FocusWorkspace({ initialObjectives }: FocusWorkspaceProps) {
   const {
     objectives,
     metrics,
@@ -17,32 +23,31 @@ export function FocusWorkspace() {
     setCategoryIndex,
     toggleHabit,
     submitDraft,
-  } = useFocusDashboard();
+  } = useFocusDashboard(initialObjectives);
+  const [dialog, setDialog] = useState<FocusObjectiveDialogState>(null);
 
   return (
     <div className="flex flex-col w-full">
       <div
         className={`flex flex-col gap-space-xl ${FOCUS_CONTENT_MAX_WIDTH} mx-auto w-full`}
       >
-        <FocusDashboardHeader metrics={metrics} />
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
-          <FocusObjectiveList
-            objectives={objectives}
-            onToggleHabit={toggleHabit}
-          />
-          <FocusMetricsAside
-            metrics={metrics}
-            quickIngest={{
-              categories: QUICK_INGEST_CATEGORIES,
-              categoryIndex,
-              draft,
-              onCategoryChange: setCategoryIndex,
-              onDraftChange: setDraft,
-              onSubmit: submitDraft,
-            }}
-          />
-        </div>
+        <FocusDashboardHeader
+          metrics={metrics}
+          onNewObjective={() => setDialog({ mode: "create", objective: null })}
+        />
+        <FocusObjectiveBoard
+          objectives={objectives}
+          metrics={metrics}
+          categoryIndex={categoryIndex}
+          draft={draft}
+          onToggleHabit={toggleHabit}
+          onEdit={(objective) => setDialog({ mode: "edit", objective })}
+          onDraftChange={setDraft}
+          onCategoryChange={setCategoryIndex}
+          onSubmitDraft={submitDraft}
+        />
       </div>
+      <FocusWorkspaceDialog dialog={dialog} onClose={() => setDialog(null)} />
     </div>
   );
 }

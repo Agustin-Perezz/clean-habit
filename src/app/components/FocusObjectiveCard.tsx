@@ -6,11 +6,13 @@ import { FocusSegmentedBar } from "./FocusSegmentedBar";
 type FocusObjectiveCardProps = {
   objective: FocusObjective;
   onToggleHabit: (habitId: string) => void;
+  onEdit: () => void;
 };
 
 export function FocusObjectiveCard({
   objective,
   onToggleHabit,
+  onEdit,
 }: FocusObjectiveCardProps) {
   const stats = getObjectiveStats(objective);
   return (
@@ -20,6 +22,7 @@ export function FocusObjectiveCard({
         percent={stats.percent}
         priorityLabel={objective.priorityLabel}
         title={objective.title}
+        onEdit={onEdit}
       />
       <FocusSegmentedBar
         completedCount={stats.completedCount}

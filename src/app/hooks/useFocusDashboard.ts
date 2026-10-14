@@ -1,21 +1,34 @@
 "use client";
 
-import { type FormEvent, useCallback, useMemo, useState } from "react";
+import {
+  type FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   createHabit,
   deriveFocusMetrics,
   type FocusObjective,
-  INITIAL_OBJECTIVES,
   QUICK_INGEST_CATEGORIES,
 } from "../mock-data";
 
-export function useFocusDashboard() {
+export function useFocusDashboard(
+  initialObjectives: readonly FocusObjective[],
+) {
   const [objectives, setObjectives] =
-    useState<readonly FocusObjective[]>(INITIAL_OBJECTIVES);
+    useState<readonly FocusObjective[]>(initialObjectives);
   const [draft, setDraft] = useState("");
   const [categoryIndex, setCategoryIndex] = useState(
     QUICK_INGEST_CATEGORIES[0].value,
   );
+
+  // Server data is the source of truth: absorb revalidated reads (create,
+  // update, delete). Habit toggles and quick-ingest additions stay ephemeral.
+  useEffect(() => {
+    setObjectives(initialObjectives);
+  }, [initialObjectives]);
 
   const toggleHabit = useCallback((objectiveId: string, habitId: string) => {
     setObjectives((previous) =>

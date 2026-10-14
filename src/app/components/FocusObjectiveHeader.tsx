@@ -1,8 +1,11 @@
+import { Button } from "@/components/ui/button";
+
 type FocusObjectiveHeaderProps = {
   category: string;
   priorityLabel?: string;
   title: string;
   percent: number;
+  onEdit: () => void;
 };
 
 export function FocusObjectiveHeader({
@@ -10,6 +13,7 @@ export function FocusObjectiveHeader({
   priorityLabel,
   title,
   percent,
+  onEdit,
 }: FocusObjectiveHeaderProps) {
   return (
     <div className="flex items-start justify-between gap-space-md">
@@ -29,6 +33,15 @@ export function FocusObjectiveHeader({
         </h2>
       </div>
       <div className="flex items-center gap-2">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`Edit ${title}`}
+          onClick={onEdit}
+        >
+          <span className="material-symbols-outlined text-[18px]">edit</span>
+        </Button>
         <span className="card-percent font-caption-strong text-caption-strong text-primary-container">
           {percent}%
         </span>
