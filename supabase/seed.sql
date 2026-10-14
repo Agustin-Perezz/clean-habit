@@ -2,12 +2,6 @@
 -- Runs after migrations on `supabase db reset` (see config.toml [db.seed]).
 -- Keep this minimal: reference data only, not test fixtures.
 
-insert into public.books (title, author) values
-  ('The Pragmatic Programmer', 'David Thomas'),
-  ('Clean Architecture', 'Robert C. Martin'),
-  ('Refactoring', 'Martin Fowler')
-on conflict do nothing;
-
 -- Focus OS reference objectives (created_at offsets keep the design order under
 -- created_at-desc reads: Deep Work, Physical Vitality, Craft Mastery).
 insert into public.objectives (title, category, priority_label, accent_color, segments, habits, created_at) values

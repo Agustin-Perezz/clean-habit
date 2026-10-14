@@ -70,7 +70,6 @@ next-supabase-scaffold/
 │   │   │   └── infrastructure/  # Supabase server/browser clients, env validation, auth helpers
 │   │   └── utils.ts
 │   ├── app/                      # App Router routes (pages, layouts, actions, proxy)
-│   │   └── books/                # Sample Books feature (page, actions, components)
 │   ├── components/
 │   │   └── ui/                   # Reusable base-ui / shadcn primitives
 │   └── proxy.ts                  # Session refresh via @supabase/ssr (formerly middleware.ts)
@@ -276,8 +275,7 @@ tests/
 │   ├── app-fixtures.ts              # Merged fixtures (coverage + supabase test client)
 │   └── fixtures/
 │       └── supabase-test-client.ts  # Supabase service client for seeding test data
-├── books.test.ts                    # Books feature tests
-└── smoke.test.ts                    # Smoke test
+├── smoke.test.ts                    # Smoke test
 ```
 
 All tests import `test` and `expect` from `_shared/app-fixtures` (not directly from Playwright).

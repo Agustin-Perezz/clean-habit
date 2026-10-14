@@ -74,7 +74,7 @@ Prefer local-first changes — keeps migrations as the source of truth.
 
 ### Email (magic link)
 
-Works by default — no config needed. Local Supabase Auth has email enabled by default. Mailpit captures the emails at `http://127.0.0.1:55324` (it does not send them). Open the Mailpit UI to click the magic link during dev.
+Works by default — no config needed. Local Supabase Auth has email enabled by default. Mailpit captures the emails (it does not send them). Get the live inbox URL from `supabase status` (`MAILPIT_URL`) — it follows the ports configured in `supabase/.env`. Open the Mailpit UI to click the magic link during dev.
 
 ### OAuth (Google, Facebook)
 
