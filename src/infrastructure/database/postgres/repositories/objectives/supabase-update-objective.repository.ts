@@ -1,5 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { UpdateObjectiveRepository } from "@/application/use-cases/objectives/update-objective/update-objective.repository.interface";
+import type {
+  UpdateObjectiveChanges,
+  UpdateObjectiveRepository,
+} from "@/application/use-cases/objectives/update-objective/update-objective.repository.interface";
 import type { Objective } from "@/domain/entities/objective.entity";
 import type { Database } from "../../database.types";
 import { objectiveMapper } from "../../mappers/objective.mapper";
