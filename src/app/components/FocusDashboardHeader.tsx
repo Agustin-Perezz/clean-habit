@@ -7,7 +7,7 @@ type FocusDashboardHeaderProps = {
 
 export function FocusDashboardHeader({ metrics }: FocusDashboardHeaderProps) {
   return (
-    <header className="flex flex-col md:flex-row md:items-end justify-between gap-space-lg pb-space-md">
+    <header className="flex flex-col md:flex-row md:items-end justify-between gap-space-lg pb-space-md mt-4">
       <div className="flex flex-col gap-space-xs">
         <span className="font-caption-strong text-caption-strong text-ink-tertiary uppercase tracking-wider">
           {DASHBOARD_DATE}
