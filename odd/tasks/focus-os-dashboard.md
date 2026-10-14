@@ -130,5 +130,14 @@ Radii: base .25rem, lg .5rem, xl .75rem, full 9999px (cards use rounded-2xl).
 `ask-on-risk` (default). Forecast ≈ 900–1200 authored lines → exceeds the ~400-line delivery budget.
 
 
+## Follow-ups (after first commit)
+- [x] F1 — Disable CI/CD auto-runs: `.github/workflows/ci.yml` triggers changed from
+      push(main)/pull_request to `workflow_dispatch` only (manual). Reversible.
+- [x] F2 — Narrow the content column: shared `FOCUS_CONTENT_MAX_WIDTH` = `max-w-[1280px]`
+      (was `max-w-[1440px]`), so the objective cards are narrower.
+- [x] F3 — Fix topbar/content misalignment: topbar now renders the same centered
+      `FOCUS_CONTENT_MAX_WIDTH` container as the workspace, so the search field's left edge
+      lines up with the main content on wide viewports.
+
 ## Next step
-Delegate T2–T6 to one bounded writer; T1 inline.
+Follow-ups F1–F3 done; verify + commit. Remaining: delivery-strategy decision (single PR vs chained).

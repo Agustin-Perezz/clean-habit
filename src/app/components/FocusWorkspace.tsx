@@ -5,6 +5,7 @@ import { QUICK_INGEST_CATEGORIES } from "../mock-data";
 import { FocusDashboardHeader } from "./FocusDashboardHeader";
 import { FocusMetricsAside } from "./FocusMetricsAside";
 import { FocusObjectiveList } from "./FocusObjectiveList";
+import { FOCUS_CONTENT_MAX_WIDTH } from "./focus-layout";
 
 export function FocusWorkspace() {
   const {
@@ -20,7 +21,9 @@ export function FocusWorkspace() {
 
   return (
     <div className="flex flex-col w-full">
-      <div className="flex flex-col gap-space-xl max-w-[1440px] mx-auto w-full">
+      <div
+        className={`flex flex-col gap-space-xl ${FOCUS_CONTENT_MAX_WIDTH} mx-auto w-full`}
+      >
         <FocusDashboardHeader metrics={metrics} />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
           <FocusObjectiveList
