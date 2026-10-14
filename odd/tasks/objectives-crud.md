@@ -53,7 +53,8 @@ unit runner `pnpm test:unit` (vitest), checks `pnpm typecheck && pnpm lint && pn
       build ✓ (with env; `/` now dynamic), unit 22/22 ✓, E2E 4/4 ✓ (after fixing a strict-mode
       locator in the test), full Playwright suite 16/16 ✓, server-render spot check ✓.
       Route: inline. S1-S6. Commits `cd96bd1` + earlier. Done.
-- [ ] T9 — Single PR (work-unit commits), Trello card: append PR link, move to Done. Route: inline. S1-S6
+- [x] T9 — Single PR #2 (8 work-unit commits), Trello card "Core functionality": PR link
+      appended to description, moved to Done. Route: inline. S1-S6. Done.
 
 ## Verification evidence
 
