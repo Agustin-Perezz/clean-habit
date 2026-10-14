@@ -1,10 +1,9 @@
 name: CI
 
+# Disabled for now: no automatic runs on push/PR. Trigger manually from the
+# Actions tab (or `gh workflow run CI`) when you want it back.
 on:
-  push:
-    branches: [main]
-  pull_request:
-    types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
