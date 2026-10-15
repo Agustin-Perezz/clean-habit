@@ -46,9 +46,20 @@ test("the pill tracks work-in-progress and completion shows the check feedback",
   await expect(pill).toHaveAttribute("aria-pressed", "false");
 
   await expect(card.locator(".animate-check-pop")).toHaveCount(0);
+  await expect(card.locator(".animate-check-spark")).toHaveCount(0);
 
   await card.getByText(habitTitle).click();
   await expect(completion).toBeChecked();
   await expect(card.locator(".animate-check-pop")).toHaveCount(1);
   await expect(card.locator(".animate-check-burst")).toHaveCount(1);
+  await expect(card.locator(".animate-check-burst-far")).toHaveCount(1);
+  await expect(card.locator(".animate-check-draw")).toHaveCount(1);
+  await expect(card.locator(".animate-check-spark")).toHaveCount(6);
+});
+
+test("the completion bell asset is served", async ({ request }) => {
+  const response = await request.get("/sounds/success-bell.mp3");
+
+  expect(response.status()).toBe(200);
+  expect(response.headers()["content-type"]).toContain("audio");
 });

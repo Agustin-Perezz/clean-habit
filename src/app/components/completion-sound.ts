@@ -1,48 +1,31 @@
-/** Completion chime synthesised with the Web Audio API — no audio asset needed. */
+/**
+ * Completion feedback — plays the bundled success bell. The element is created
+ * lazily on the first completion (a user gesture); a blocked or missing audio
+ * file leaves completion itself untouched.
+ */
 
-const COMPLETION_TONES = [
-  { frequency: 1318.51, offset: 0, duration: 0.26 },
-  { frequency: 1975.53, offset: 0.085, duration: 0.4 },
-] as const;
+const COMPLETION_SOUND_SRC = "/sounds/success-bell.mp3";
 
-const PEAK_GAIN = 0.12;
-const ATTACK_SECONDS = 0.008;
-const SILENCE = 0.0001;
+let completionAudio: HTMLAudioElement | null = null;
 
-let audioContext: AudioContext | null = null;
-
-function getAudioContext(): AudioContext | null {
-  if (!audioContext) {
-    try {
-      audioContext = new AudioContext();
-    } catch {
-      return null;
-    }
+function getCompletionAudio(): HTMLAudioElement | null {
+  if (typeof Audio === "undefined") {
+    return null;
   }
-  return audioContext;
+  if (!completionAudio) {
+    completionAudio = new Audio(COMPLETION_SOUND_SRC);
+    completionAudio.preload = "auto";
+  }
+  return completionAudio;
 }
 
 export function playCompletionSound(): void {
-  const context = getAudioContext();
-  if (!context) {
+  const audio = getCompletionAudio();
+  if (!audio) {
     return;
   }
-  if (context.state === "suspended") {
-    void context.resume();
-  }
-  const start = context.currentTime;
-  for (const tone of COMPLETION_TONES) {
-    const toneStart = start + tone.offset;
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    oscillator.type = "sine";
-    oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
-    gain.gain.setValueAtTime(0, toneStart);
-    gain.gain.linearRampToValueAtTime(PEAK_GAIN, toneStart + ATTACK_SECONDS);
-    gain.gain.exponentialRampToValueAtTime(SILENCE, toneStart + tone.duration);
-    oscillator.connect(gain);
-    gain.connect(context.destination);
-    oscillator.start(toneStart);
-    oscillator.stop(toneStart + tone.duration + 0.02);
-  }
+  audio.currentTime = 0;
+  void audio.play().catch(() => {
+    // Autoplay blocked — completion still stands.
+  });
 }

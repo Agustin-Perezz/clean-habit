@@ -1,4 +1,4 @@
-import { CHECK_ACTIVE_COLOR } from "../mock-data";
+import { FocusCompletionMark } from "./FocusCompletionMark";
 
 type FocusHabitCheckProps = {
   completed: boolean;
@@ -10,21 +10,7 @@ export function FocusHabitCheck({
   accentColor,
 }: FocusHabitCheckProps) {
   if (completed) {
-    return (
-      <span className="relative flex w-6 h-6 items-center justify-center">
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 rounded-full animate-check-burst motion-reduce:animate-none"
-          style={{ backgroundColor: CHECK_ACTIVE_COLOR, opacity: 0 }}
-        />
-        <span
-          className="check-box flex w-6 h-6 items-center justify-center rounded-full text-on-primary animate-check-pop transition-all motion-reduce:animate-none"
-          style={{ backgroundColor: CHECK_ACTIVE_COLOR }}
-        >
-          <span className="material-symbols-outlined text-[16px]">check</span>
-        </span>
-      </span>
-    );
+    return <FocusCompletionMark />;
   }
   return (
     <div className="check-box w-6 h-6 flex items-center justify-center">
