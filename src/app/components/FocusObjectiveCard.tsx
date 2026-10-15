@@ -5,13 +5,17 @@ import { FocusSegmentedBar } from "./FocusSegmentedBar";
 
 type FocusObjectiveCardProps = {
   objective: FocusObjective;
+  activeHabitId: string | null;
   onToggleHabit: (habitId: string) => void;
+  onToggleFocus: (habitId: string) => void;
   onEdit: () => void;
 };
 
 export function FocusObjectiveCard({
   objective,
+  activeHabitId,
   onToggleHabit,
+  onToggleFocus,
   onEdit,
 }: FocusObjectiveCardProps) {
   const stats = getObjectiveStats(objective);
@@ -34,9 +38,11 @@ export function FocusObjectiveCard({
         {objective.habits.map((habit) => (
           <FocusHabitRow
             accentColor={objective.accentColor}
+            active={habit.id === activeHabitId}
             habit={habit}
             key={habit.id}
             onToggle={() => onToggleHabit(habit.id)}
+            onToggleFocus={() => onToggleFocus(habit.id)}
           />
         ))}
       </div>

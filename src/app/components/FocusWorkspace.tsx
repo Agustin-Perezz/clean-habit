@@ -17,12 +17,10 @@ export function FocusWorkspace({ initialObjectives }: FocusWorkspaceProps) {
   const {
     objectives,
     metrics,
-    draft,
-    selectedObjectiveId,
-    setDraft,
-    setSelectedObjectiveId,
+    activeHabitId,
+    quickIngest,
     toggleHabit,
-    submitDraft,
+    toggleActiveHabit,
   } = useFocusDashboard(initialObjectives);
   const [dialog, setDialog] = useState<FocusObjectiveDialogState>(null);
 
@@ -38,13 +36,11 @@ export function FocusWorkspace({ initialObjectives }: FocusWorkspaceProps) {
         <FocusObjectiveBoard
           objectives={objectives}
           metrics={metrics}
-          selectedObjectiveId={selectedObjectiveId}
-          draft={draft}
+          quickIngest={quickIngest}
+          activeHabitId={activeHabitId}
           onToggleHabit={toggleHabit}
+          onToggleFocus={toggleActiveHabit}
           onEdit={(objective) => setDialog({ mode: "edit", objective })}
-          onDraftChange={setDraft}
-          onObjectiveChange={setSelectedObjectiveId}
-          onSubmitDraft={submitDraft}
         />
       </div>
       <FocusWorkspaceDialog dialog={dialog} onClose={() => setDialog(null)} />
