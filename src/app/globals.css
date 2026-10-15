@@ -192,6 +192,34 @@
   --radius-focus-lg: 0.5rem;
   --radius-focus-xl: 0.75rem;
   --radius-focus-2xl: 1rem;
+
+  /* Completion feedback: the check pops in while a ring bursts outward.
+     Emitted only when the animate-check-* utilities are used. */
+  --animate-check-pop: check-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-check-burst: check-burst 520ms ease-out both;
+
+  @keyframes check-pop {
+    0% {
+      transform: scale(0.5);
+    }
+    60% {
+      transform: scale(1.18);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes check-burst {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(1.9);
+      opacity: 0;
+    }
+  }
 }
 
 :root {
