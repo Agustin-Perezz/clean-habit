@@ -9,13 +9,14 @@ export const OBJECTIVE_FORM_FIELDS = {
   accentColor: "accentColor",
 } as const;
 
-// Accent palette for newly created objectives (Focus OS design tokens).
+// Accent palette for newly created objectives (Focus OS design tokens). The
+// completion green (CHECK_ACTIVE_COLOR) is deliberately absent: an open habit
+// circle must never look like a completed one.
 export const OBJECTIVE_ACCENT_COLORS: readonly string[] = [
   "#d98218",
   "#FF9F0A",
   "#5856D6",
   "#004e9f",
-  "#15803d",
 ];
 
 // Segmented-bar template for newly created objectives (mock display content).
