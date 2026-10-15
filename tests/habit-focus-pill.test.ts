@@ -20,7 +20,7 @@ test.afterAll(async () => {
   await deleteObjectivesByPrefix(TEST_PREFIX);
 });
 
-test("the pill tracks work-in-progress and completion shows the check feedback", async ({
+test("the habit row handles work-in-progress, completion, and hover deletion", async ({
   page,
 }) => {
   const habitTitle = `E2E-Focus-${Date.now()}`;
@@ -55,6 +55,19 @@ test("the pill tracks work-in-progress and completion shows the check feedback",
   await expect(card.locator(".animate-check-burst-far")).toHaveCount(1);
   await expect(card.locator(".animate-check-draw")).toHaveCount(1);
   await expect(card.locator(".animate-check-spark")).toHaveCount(6);
+
+  const deleteButton = card.getByRole("button", {
+    name: `Delete ${habitTitle}`,
+  });
+  // The click above leaves the pointer over the row, so move it away first.
+  await page.mouse.move(0, 0);
+  await expect(deleteButton).toHaveCSS("opacity", "0");
+
+  await card.getByText(habitTitle).hover();
+  await expect(deleteButton).toHaveCSS("opacity", "1");
+
+  await deleteButton.click();
+  await expect(card.getByText(habitTitle)).toBeHidden();
 });
 
 test("the completion bell asset is served", async ({ request }) => {

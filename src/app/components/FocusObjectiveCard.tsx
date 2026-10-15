@@ -8,6 +8,7 @@ type FocusObjectiveCardProps = {
   activeHabitId: string | null;
   onToggleHabit: (habitId: string) => void;
   onToggleFocus: (habitId: string) => void;
+  onDeleteHabit: (habitId: string) => void;
   onEdit: () => void;
 };
 
@@ -16,6 +17,7 @@ export function FocusObjectiveCard({
   activeHabitId,
   onToggleHabit,
   onToggleFocus,
+  onDeleteHabit,
   onEdit,
 }: FocusObjectiveCardProps) {
   const stats = getObjectiveStats(objective);
@@ -41,6 +43,7 @@ export function FocusObjectiveCard({
             active={habit.id === activeHabitId}
             habit={habit}
             key={habit.id}
+            onDelete={() => onDeleteHabit(habit.id)}
             onToggle={() => onToggleHabit(habit.id)}
             onToggleFocus={() => onToggleFocus(habit.id)}
           />

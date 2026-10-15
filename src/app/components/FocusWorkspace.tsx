@@ -20,6 +20,7 @@ export function FocusWorkspace({ initialObjectives }: FocusWorkspaceProps) {
     activeHabitId,
     quickIngest,
     toggleHabit,
+    deleteHabit,
     toggleActiveHabit,
   } = useFocusDashboard(initialObjectives);
   const [dialog, setDialog] = useState<FocusObjectiveDialogState>(null);
@@ -40,6 +41,7 @@ export function FocusWorkspace({ initialObjectives }: FocusWorkspaceProps) {
           activeHabitId={activeHabitId}
           onToggleHabit={toggleHabit}
           onToggleFocus={toggleActiveHabit}
+          onDeleteHabit={deleteHabit}
           onEdit={(objective) => setDialog({ mode: "edit", objective })}
         />
       </div>
