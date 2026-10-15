@@ -7,9 +7,11 @@ import {
   useMemo,
   useState,
 } from "react";
+import type { FocusQuickIngestProps } from "../components/focus-quick-ingest-types";
 import {
   createHabit,
   deriveFocusMetrics,
+  deriveQuickIngestOptions,
   type FocusObjective,
 } from "../mock-data";
 
@@ -22,6 +24,7 @@ export function useFocusDashboard(
   const [selectedObjectiveId, setSelectedObjectiveId] = useState(
     initialObjectives[0]?.id ?? "",
   );
+  const [activeHabitId, setActiveHabitId] = useState<string | null>(null);
 
   // Server data is the source of truth: absorb revalidated reads (create,
   // update, delete). Habit toggles and quick-ingest additions stay ephemeral.
@@ -51,6 +54,12 @@ export function useFocusDashboard(
     );
   }, []);
 
+  // One task is "being worked on" at a time; the completion checkbox is a
+  // separate control and never changes this state.
+  const toggleActiveHabit = useCallback((habitId: string) => {
+    setActiveHabitId((current) => (current === habitId ? null : habitId));
+  }, []);
+
   const submitDraft = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -75,14 +84,21 @@ export function useFocusDashboard(
 
   const metrics = useMemo(() => deriveFocusMetrics(objectives), [objectives]);
 
+  const quickIngest: FocusQuickIngestProps = {
+    draft,
+    selectedObjectiveId,
+    options: deriveQuickIngestOptions(objectives),
+    onDraftChange: setDraft,
+    onObjectiveChange: setSelectedObjectiveId,
+    onSubmit: submitDraft,
+  };
+
   return {
     objectives,
     metrics,
-    draft,
-    selectedObjectiveId,
-    setDraft,
-    setSelectedObjectiveId,
+    activeHabitId,
+    quickIngest,
     toggleHabit,
-    submitDraft,
+    toggleActiveHabit,
   };
 }

@@ -4,13 +4,17 @@ import { FocusObjectiveEmptyState } from "./FocusObjectiveEmptyState";
 
 type FocusObjectiveListProps = {
   objectives: readonly FocusObjective[];
+  activeHabitId: string | null;
   onToggleHabit: (objectiveId: string, habitId: string) => void;
+  onToggleFocus: (habitId: string) => void;
   onEdit: (objective: FocusObjective) => void;
 };
 
 export function FocusObjectiveList({
   objectives,
+  activeHabitId,
   onToggleHabit,
+  onToggleFocus,
   onEdit,
 }: FocusObjectiveListProps) {
   if (objectives.length === 0) {
@@ -23,7 +27,9 @@ export function FocusObjectiveList({
         <FocusObjectiveCard
           key={objective.id}
           objective={objective}
+          activeHabitId={activeHabitId}
           onToggleHabit={(habitId) => onToggleHabit(objective.id, habitId)}
+          onToggleFocus={onToggleFocus}
           onEdit={() => onEdit(objective)}
         />
       ))}
