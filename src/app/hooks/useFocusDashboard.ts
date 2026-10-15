@@ -67,6 +67,23 @@ export function useFocusDashboard(
     [objectives],
   );
 
+  const deleteHabit = useCallback((objectiveId: string, habitId: string) => {
+    setObjectives((previous) =>
+      previous.map((objective) =>
+        objective.id === objectiveId
+          ? {
+              ...objective,
+              habits: objective.habits.filter(
+                (candidate) => candidate.id !== habitId,
+              ),
+            }
+          : objective,
+      ),
+    );
+    // A deleted task cannot still be the one being worked on.
+    setActiveHabitId((current) => (current === habitId ? null : current));
+  }, []);
+
   // One task is "being worked on" at a time; the completion checkbox is a
   // separate control and never changes this state.
   const toggleActiveHabit = useCallback((habitId: string) => {
@@ -112,6 +129,7 @@ export function useFocusDashboard(
     activeHabitId,
     quickIngest,
     toggleHabit,
+    deleteHabit,
     toggleActiveHabit,
   };
 }

@@ -10,6 +10,7 @@ type FocusObjectiveBoardProps = {
   activeHabitId: string | null;
   onToggleHabit: (objectiveId: string, habitId: string) => void;
   onToggleFocus: (habitId: string) => void;
+  onDeleteHabit: (objectiveId: string, habitId: string) => void;
   onEdit: (objective: FocusObjective) => void;
 };
 
@@ -20,6 +21,7 @@ export function FocusObjectiveBoard({
   activeHabitId,
   onToggleHabit,
   onToggleFocus,
+  onDeleteHabit,
   onEdit,
 }: FocusObjectiveBoardProps) {
   return (
@@ -29,6 +31,7 @@ export function FocusObjectiveBoard({
         activeHabitId={activeHabitId}
         onToggleHabit={onToggleHabit}
         onToggleFocus={onToggleFocus}
+        onDeleteHabit={onDeleteHabit}
         onEdit={onEdit}
       />
       <FocusMetricsAside metrics={metrics} quickIngest={quickIngest} />

@@ -7,6 +7,7 @@ type FocusObjectiveListProps = {
   activeHabitId: string | null;
   onToggleHabit: (objectiveId: string, habitId: string) => void;
   onToggleFocus: (habitId: string) => void;
+  onDeleteHabit: (objectiveId: string, habitId: string) => void;
   onEdit: (objective: FocusObjective) => void;
 };
 
@@ -15,6 +16,7 @@ export function FocusObjectiveList({
   activeHabitId,
   onToggleHabit,
   onToggleFocus,
+  onDeleteHabit,
   onEdit,
 }: FocusObjectiveListProps) {
   if (objectives.length === 0) {
@@ -30,6 +32,7 @@ export function FocusObjectiveList({
           activeHabitId={activeHabitId}
           onToggleHabit={(habitId) => onToggleHabit(objective.id, habitId)}
           onToggleFocus={onToggleFocus}
+          onDeleteHabit={(habitId) => onDeleteHabit(objective.id, habitId)}
           onEdit={() => onEdit(objective)}
         />
       ))}
