@@ -40,8 +40,9 @@ export type FocusNavItemData = {
   icon: string;
 };
 
-export type QuickIngestCategory = {
-  value: number;
+export type QuickIngestObjectiveOption = {
+  /** Objective id — the value the quick-ingest selector submits. */
+  value: string;
   label: string;
 };
 
@@ -112,11 +113,16 @@ export const LIBRARY_NAV: readonly FocusNavItemData[] = [
   { path: "settings", label: "Settings", icon: "settings" },
 ];
 
-export const QUICK_INGEST_CATEGORIES: readonly QuickIngestCategory[] = [
-  { value: 0, label: "Add to Deep Work & Focus" },
-  { value: 1, label: "Add to Physical Vitality" },
-  { value: 2, label: "Add to Creative Mastery" },
-];
+export const QUICK_INGEST_OPTION_PREFIX = "Add to ";
+
+export function deriveQuickIngestOptions(
+  objectives: readonly FocusObjective[],
+): readonly QuickIngestObjectiveOption[] {
+  return objectives.map((objective) => ({
+    value: objective.id,
+    label: `${QUICK_INGEST_OPTION_PREFIX}${objective.title}`,
+  }));
+}
 
 export const FOCUS_QUOTE: FocusQuote = {
   icon: "spa",

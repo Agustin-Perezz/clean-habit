@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FocusQuickIngestCategorySelect } from "./FocusQuickIngestCategorySelect";
+import { FocusQuickIngestObjectiveSelect } from "./FocusQuickIngestObjectiveSelect";
 import type { FocusQuickIngestProps } from "./focus-quick-ingest-types";
 
 export function FocusQuickIngestForm({
   draft,
-  categoryIndex,
-  categories,
+  selectedObjectiveId,
+  options,
   onDraftChange,
-  onCategoryChange,
+  onObjectiveChange,
   onSubmit,
 }: FocusQuickIngestProps) {
   return (
@@ -30,10 +30,10 @@ export function FocusQuickIngestForm({
           </span>
         </Button>
       </div>
-      <FocusQuickIngestCategorySelect
-        categories={categories}
-        categoryIndex={categoryIndex}
-        onCategoryChange={onCategoryChange}
+      <FocusQuickIngestObjectiveSelect
+        options={options}
+        selectedObjectiveId={selectedObjectiveId}
+        onObjectiveChange={onObjectiveChange}
       />
     </form>
   );

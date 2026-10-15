@@ -1,11 +1,11 @@
 import type { FormEvent } from "react";
-import type { QuickIngestCategory } from "../mock-data";
+import type { QuickIngestObjectiveOption } from "../mock-data";
 
 export type FocusQuickIngestProps = {
   draft: string;
-  categoryIndex: number;
-  categories: readonly QuickIngestCategory[];
+  selectedObjectiveId: string;
+  options: readonly QuickIngestObjectiveOption[];
   onDraftChange: (value: string) => void;
-  onCategoryChange: (index: number) => void;
+  onObjectiveChange: (objectiveId: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 };

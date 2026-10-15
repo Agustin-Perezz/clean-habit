@@ -1,8 +1,8 @@
 import type { FormEvent } from "react";
 import {
+  deriveQuickIngestOptions,
   type FocusMetrics,
   type FocusObjective,
-  QUICK_INGEST_CATEGORIES,
 } from "../mock-data";
 import { FocusMetricsAside } from "./FocusMetricsAside";
 import { FocusObjectiveList } from "./FocusObjectiveList";
@@ -10,24 +10,24 @@ import { FocusObjectiveList } from "./FocusObjectiveList";
 type FocusObjectiveBoardProps = {
   objectives: readonly FocusObjective[];
   metrics: FocusMetrics;
-  categoryIndex: number;
+  selectedObjectiveId: string;
   draft: string;
   onToggleHabit: (objectiveId: string, habitId: string) => void;
   onEdit: (objective: FocusObjective) => void;
   onDraftChange: (draft: string) => void;
-  onCategoryChange: (index: number) => void;
+  onObjectiveChange: (objectiveId: string) => void;
   onSubmitDraft: (event: FormEvent<HTMLFormElement>) => void;
 };
 
 export function FocusObjectiveBoard({
   objectives,
   metrics,
-  categoryIndex,
+  selectedObjectiveId,
   draft,
   onToggleHabit,
   onEdit,
   onDraftChange,
-  onCategoryChange,
+  onObjectiveChange,
   onSubmitDraft,
 }: FocusObjectiveBoardProps) {
   return (
@@ -40,11 +40,11 @@ export function FocusObjectiveBoard({
       <FocusMetricsAside
         metrics={metrics}
         quickIngest={{
-          categories: QUICK_INGEST_CATEGORIES,
-          categoryIndex,
           draft,
-          onCategoryChange,
+          selectedObjectiveId,
+          options: deriveQuickIngestOptions(objectives),
           onDraftChange,
+          onObjectiveChange,
           onSubmit: onSubmitDraft,
         }}
       />
