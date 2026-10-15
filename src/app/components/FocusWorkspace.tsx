@@ -18,9 +18,9 @@ export function FocusWorkspace({ initialObjectives }: FocusWorkspaceProps) {
     objectives,
     metrics,
     draft,
-    categoryIndex,
+    selectedObjectiveId,
     setDraft,
-    setCategoryIndex,
+    setSelectedObjectiveId,
     toggleHabit,
     submitDraft,
   } = useFocusDashboard(initialObjectives);
@@ -38,12 +38,12 @@ export function FocusWorkspace({ initialObjectives }: FocusWorkspaceProps) {
         <FocusObjectiveBoard
           objectives={objectives}
           metrics={metrics}
-          categoryIndex={categoryIndex}
+          selectedObjectiveId={selectedObjectiveId}
           draft={draft}
           onToggleHabit={toggleHabit}
           onEdit={(objective) => setDialog({ mode: "edit", objective })}
           onDraftChange={setDraft}
-          onCategoryChange={setCategoryIndex}
+          onObjectiveChange={setSelectedObjectiveId}
           onSubmitDraft={submitDraft}
         />
       </div>

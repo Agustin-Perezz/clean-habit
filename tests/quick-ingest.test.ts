@@ -4,6 +4,7 @@ import { supabaseTestClient } from "./_shared/fixtures/supabase-test-client";
 const RUN_ID = crypto.randomUUID();
 const TEST_PREFIX = `E2E-${RUN_ID}`;
 const quickIngestTargetTitle = `${TEST_PREFIX}-quick-ingest-target`;
+const quickIngestTargetOptionLabel = `Add to ${quickIngestTargetTitle}`;
 
 test.beforeAll(async () => {
   const { error } = await supabaseTestClient.from("objectives").insert({
@@ -38,12 +39,14 @@ test("user can quick-ingest a ritual into the selected objective", async ({
   await page.goto("/");
 
   await page.getByRole("combobox").click();
-  await expect(page.getByRole("option").first()).toContainText(
-    "Add to Deep Work & Focus",
-  );
-  await page.getByRole("option").first().click();
+  await expect(
+    page.getByRole("option", { name: quickIngestTargetOptionLabel }),
+  ).toBeVisible();
+  await page
+    .getByRole("option", { name: quickIngestTargetOptionLabel })
+    .click();
   await expect(page.getByRole("combobox")).toContainText(
-    "Add to Deep Work & Focus",
+    quickIngestTargetOptionLabel,
   );
 
   await page.getByPlaceholder("Draft new daily ritual...").fill(habitTitle);

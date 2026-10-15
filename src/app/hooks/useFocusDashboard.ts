@@ -11,7 +11,6 @@ import {
   createHabit,
   deriveFocusMetrics,
   type FocusObjective,
-  QUICK_INGEST_CATEGORIES,
 } from "../mock-data";
 
 export function useFocusDashboard(
@@ -20,14 +19,19 @@ export function useFocusDashboard(
   const [objectives, setObjectives] =
     useState<readonly FocusObjective[]>(initialObjectives);
   const [draft, setDraft] = useState("");
-  const [categoryIndex, setCategoryIndex] = useState(
-    QUICK_INGEST_CATEGORIES[0].value,
+  const [selectedObjectiveId, setSelectedObjectiveId] = useState(
+    initialObjectives[0]?.id ?? "",
   );
 
   // Server data is the source of truth: absorb revalidated reads (create,
   // update, delete). Habit toggles and quick-ingest additions stay ephemeral.
   useEffect(() => {
     setObjectives(initialObjectives);
+    setSelectedObjectiveId((current) =>
+      initialObjectives.some((objective) => objective.id === current)
+        ? current
+        : (initialObjectives[0]?.id ?? ""),
+    );
   }, [initialObjectives]);
 
   const toggleHabit = useCallback((objectiveId: string, habitId: string) => {
@@ -51,12 +55,12 @@ export function useFocusDashboard(
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       const title = draft.trim();
-      if (title.length === 0) {
+      if (title.length === 0 || selectedObjectiveId.length === 0) {
         return;
       }
       setObjectives((previous) =>
-        previous.map((objective, index) =>
-          index === categoryIndex
+        previous.map((objective) =>
+          objective.id === selectedObjectiveId
             ? {
                 ...objective,
                 habits: [...objective.habits, createHabit(title)],
@@ -66,7 +70,7 @@ export function useFocusDashboard(
       );
       setDraft("");
     },
-    [draft, categoryIndex],
+    [draft, selectedObjectiveId],
   );
 
   const metrics = useMemo(() => deriveFocusMetrics(objectives), [objectives]);
@@ -75,9 +79,9 @@ export function useFocusDashboard(
     objectives,
     metrics,
     draft,
-    categoryIndex,
+    selectedObjectiveId,
     setDraft,
-    setCategoryIndex,
+    setSelectedObjectiveId,
     toggleHabit,
     submitDraft,
   };
