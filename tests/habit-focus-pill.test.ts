@@ -20,7 +20,7 @@ test.afterAll(async () => {
   await deleteObjectivesByPrefix(TEST_PREFIX);
 });
 
-test("the sub-task pill marks work-in-progress without completing the task", async ({
+test("the pill tracks work-in-progress and completion shows the check feedback", async ({
   page,
 }) => {
   const habitTitle = `E2E-Focus-${Date.now()}`;
@@ -45,6 +45,10 @@ test("the sub-task pill marks work-in-progress without completing the task", asy
   await pill.click();
   await expect(pill).toHaveAttribute("aria-pressed", "false");
 
+  await expect(card.locator(".animate-check-pop")).toHaveCount(0);
+
   await card.getByText(habitTitle).click();
   await expect(completion).toBeChecked();
+  await expect(card.locator(".animate-check-pop")).toHaveCount(1);
+  await expect(card.locator(".animate-check-burst")).toHaveCount(1);
 });

@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { playCompletionSound } from "../components/completion-sound";
 import type { FocusQuickIngestProps } from "../components/focus-quick-ingest-types";
 import {
   createHabit,
@@ -37,22 +38,34 @@ export function useFocusDashboard(
     );
   }, [initialObjectives]);
 
-  const toggleHabit = useCallback((objectiveId: string, habitId: string) => {
-    setObjectives((previous) =>
-      previous.map((objective) =>
-        objective.id === objectiveId
-          ? {
-              ...objective,
-              habits: objective.habits.map((habit) =>
-                habit.id === habitId
-                  ? { ...habit, completed: !habit.completed }
-                  : habit,
-              ),
-            }
-          : objective,
-      ),
-    );
-  }, []);
+  const toggleHabit = useCallback(
+    (objectiveId: string, habitId: string) => {
+      const habit = objectives
+        .find((objective) => objective.id === objectiveId)
+        ?.habits.find((candidate) => candidate.id === habitId);
+
+      // Feedback belongs to the transition into completion, not to undone work.
+      if (habit && !habit.completed) {
+        playCompletionSound();
+      }
+
+      setObjectives((previous) =>
+        previous.map((objective) =>
+          objective.id === objectiveId
+            ? {
+                ...objective,
+                habits: objective.habits.map((candidate) =>
+                  candidate.id === habitId
+                    ? { ...candidate, completed: !candidate.completed }
+                    : candidate,
+                ),
+              }
+            : objective,
+        ),
+      );
+    },
+    [objectives],
+  );
 
   // One task is "being worked on" at a time; the completion checkbox is a
   // separate control and never changes this state.
