@@ -5,7 +5,6 @@ import { createObjectiveRequestDto } from "@/application/use-cases/objectives/cr
 import { deleteObjectiveRequestDto } from "@/application/use-cases/objectives/delete-objective/delete-objective.request.dto";
 import { updateObjectiveRequestDto } from "@/application/use-cases/objectives/update-objective/update-objective.request.dto";
 import { createObjectivesContainer } from "@/lib/containers/objectives.container";
-import { requireUser } from "@/lib/shared/infrastructure/auth.server";
 import { createSupabaseServerClient } from "@/lib/shared/infrastructure/supabase.server";
 import {
   createDefaultObjectiveHabits,
@@ -33,8 +32,6 @@ export async function createObjectiveAction(
   _prevState: ObjectiveActionState,
   formData: FormData,
 ): Promise<ObjectiveActionState> {
-  await requireUser();
-
   const parsed = createObjectiveRequestDto.safeParse({
     title: formData.get(OBJECTIVE_FORM_FIELDS.title),
     category: formData.get(OBJECTIVE_FORM_FIELDS.category),
@@ -65,8 +62,6 @@ export async function updateObjectiveAction(
   _prevState: ObjectiveActionState,
   formData: FormData,
 ): Promise<ObjectiveActionState> {
-  await requireUser();
-
   const parsed = updateObjectiveRequestDto.safeParse({
     id: formData.get(OBJECTIVE_FORM_FIELDS.id),
     title: formData.get(OBJECTIVE_FORM_FIELDS.title),
@@ -96,8 +91,6 @@ export async function deleteObjectiveAction(
   _prevState: ObjectiveActionState,
   formData: FormData,
 ): Promise<ObjectiveActionState> {
-  await requireUser();
-
   const parsed = deleteObjectiveRequestDto.safeParse({
     id: formData.get(OBJECTIVE_FORM_FIELDS.id),
   });

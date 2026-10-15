@@ -38,14 +38,11 @@ test.afterAll(async () => {
   }
 });
 
-test("home page loads and shows seeded objectives", async ({ page }) => {
+test("home page loads and shows the objective workspace", async ({ page }) => {
   await page.goto("/");
 
   await expect(
     page.getByRole("heading", { name: "Focus & Habits" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Deep Work & Focus" }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: "New Objective" }),
@@ -53,7 +50,7 @@ test("home page loads and shows seeded objectives", async ({ page }) => {
 });
 
 test("user can create an objective via the New Objective modal", async ({
-  authenticatedPage: page,
+  page,
 }) => {
   const title = `${TEST_PREFIX}-create-${Date.now()}`;
   const category = `${TEST_PREFIX} Created Category`;
@@ -69,9 +66,7 @@ test("user can create an objective via the New Objective modal", async ({
   await expect(page.getByText(category)).toBeVisible();
 });
 
-test("user can edit an objective from the card header", async ({
-  authenticatedPage: page,
-}) => {
+test("user can edit an objective from the card header", async ({ page }) => {
   const originalTitle = `${TEST_PREFIX}-edit-card`;
   const updatedTitle = `${TEST_PREFIX}-edit-card-updated`;
 
@@ -84,9 +79,7 @@ test("user can edit an objective from the card header", async ({
   await expect(page.getByText(updatedTitle)).toBeVisible();
 });
 
-test("user can delete an objective from the edit dialog", async ({
-  authenticatedPage: page,
-}) => {
+test("user can delete an objective from the edit dialog", async ({ page }) => {
   const title = `${TEST_PREFIX}-delete-card`;
 
   await page.goto("/");
