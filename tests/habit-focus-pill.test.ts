@@ -1,5 +1,8 @@
 import { expect, test } from "./_shared/app-fixtures";
-import { supabaseTestClient } from "./_shared/fixtures/supabase-test-client";
+import {
+  deleteObjectivesByPrefix,
+  seedObjectives,
+} from "./_shared/fixtures/objective-fixtures";
 
 const RUN_ID = crypto.randomUUID();
 const TEST_PREFIX = `E2E-${RUN_ID}`;
@@ -7,28 +10,14 @@ const objectiveTitle = `${TEST_PREFIX}-focus-pill-target`;
 const objectiveOptionLabel = `Add to ${objectiveTitle}`;
 
 test.beforeAll(async () => {
-  const { error } = await supabaseTestClient.from("objectives").insert({
-    title: objectiveTitle,
+  await seedObjectives({
+    titles: [objectiveTitle],
     category: `${TEST_PREFIX} Category`,
-    accent_color: "#d98218",
-    segments: [],
-    habits: [],
   });
-
-  if (error) {
-    throw new Error(`Failed to seed focus-pill target: ${error.message}`);
-  }
 });
 
 test.afterAll(async () => {
-  const { error } = await supabaseTestClient
-    .from("objectives")
-    .delete()
-    .like("title", `${TEST_PREFIX}%`);
-
-  if (error) {
-    throw new Error(`Failed to clean up focus-pill target: ${error.message}`);
-  }
+  await deleteObjectivesByPrefix(TEST_PREFIX);
 });
 
 test("the sub-task pill marks work-in-progress without completing the task", async ({

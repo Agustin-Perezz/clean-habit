@@ -1,5 +1,8 @@
 import { expect, test } from "./_shared/app-fixtures";
-import { supabaseTestClient } from "./_shared/fixtures/supabase-test-client";
+import {
+  deleteObjectivesByPrefix,
+  seedObjectives,
+} from "./_shared/fixtures/objective-fixtures";
 
 const RUN_ID = crypto.randomUUID();
 const TEST_PREFIX = `E2E-${RUN_ID}`;
@@ -7,28 +10,14 @@ const quickIngestTargetTitle = `${TEST_PREFIX}-quick-ingest-target`;
 const quickIngestTargetOptionLabel = `Add to ${quickIngestTargetTitle}`;
 
 test.beforeAll(async () => {
-  const { error } = await supabaseTestClient.from("objectives").insert({
-    title: quickIngestTargetTitle,
+  await seedObjectives({
+    titles: [quickIngestTargetTitle],
     category: `${TEST_PREFIX} Category`,
-    accent_color: "#d98218",
-    segments: [],
-    habits: [],
   });
-
-  if (error) {
-    throw new Error(`Failed to seed quick-ingest target: ${error.message}`);
-  }
 });
 
 test.afterAll(async () => {
-  const { error } = await supabaseTestClient
-    .from("objectives")
-    .delete()
-    .like("title", `${TEST_PREFIX}%`);
-
-  if (error) {
-    throw new Error(`Failed to clean up quick-ingest target: ${error.message}`);
-  }
+  await deleteObjectivesByPrefix(TEST_PREFIX);
 });
 
 test("user can quick-ingest a ritual into the selected objective", async ({
