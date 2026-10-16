@@ -5,14 +5,17 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
+import { updateObjectiveHabitsAction } from "../actions";
 import { playCompletionSound } from "../components/completion-sound";
 import type { FocusQuickIngestProps } from "../components/focus-quick-ingest-types";
 import {
   createHabit,
   deriveFocusMetrics,
   deriveQuickIngestOptions,
+  type FocusHabit,
   type FocusObjective,
 } from "../mock-data";
 
@@ -26,9 +29,11 @@ export function useFocusDashboard(
     initialObjectives[0]?.id ?? "",
   );
   const [activeHabitId, setActiveHabitId] = useState<string | null>(null);
+  const [habitError, setHabitError] = useState<string | null>(null);
 
   // Server data is the source of truth: absorb revalidated reads (create,
-  // update, delete). Habit toggles and quick-ingest additions stay ephemeral.
+  // update, delete). Habit edits are applied optimistically and then written
+  // through `persistHabits`, so a reload never drops a subtask.
   useEffect(() => {
     setObjectives(initialObjectives);
     setSelectedObjectiveId((current) =>
@@ -38,51 +43,109 @@ export function useFocusDashboard(
     );
   }, [initialObjectives]);
 
+  // Two subtask edits in a row are two requests, and nothing stops an older
+  // one from landing last. Chaining the writes keeps the server on the user's
+  // order of intent, so the newest edit always wins.
+  const writeQueue = useRef<Promise<void>>(Promise.resolve());
+
+  const persistHabits = useCallback(
+    (
+      objectiveId: string,
+      habits: readonly FocusHabit[],
+      previousObjectives: readonly FocusObjective[],
+    ) => {
+      writeQueue.current = writeQueue.current
+        .catch(() => undefined)
+        .then(async () => {
+          const result = await updateObjectiveHabitsAction({
+            id: objectiveId,
+            habits: [...habits],
+          });
+
+          if (result.error) {
+            // The write failed: fall back to the last known server state so the
+            // board never shows a subtask that was not saved.
+            setObjectives(previousObjectives);
+            setHabitError(result.error);
+            return;
+          }
+
+          setHabitError(null);
+        });
+
+      return writeQueue.current;
+    },
+    [],
+  );
+
   const toggleHabit = useCallback(
     (objectiveId: string, habitId: string) => {
-      const habit = objectives
-        .find((objective) => objective.id === objectiveId)
-        ?.habits.find((candidate) => candidate.id === habitId);
+      const objective = objectives.find(
+        (candidate) => candidate.id === objectiveId,
+      );
+      const habit = objective?.habits.find(
+        (candidate) => candidate.id === habitId,
+      );
+
+      if (!objective || !habit) {
+        return;
+      }
 
       // Feedback belongs to the transition into completion, not to undone work.
-      if (habit && !habit.completed) {
+      if (!habit.completed) {
         playCompletionSound();
       }
 
-      setObjectives((previous) =>
-        previous.map((objective) =>
-          objective.id === objectiveId
-            ? {
-                ...objective,
-                habits: objective.habits.map((candidate) =>
-                  candidate.id === habitId
-                    ? { ...candidate, completed: !candidate.completed }
-                    : candidate,
-                ),
-              }
-            : objective,
-        ),
-      );
-    },
-    [objectives],
-  );
-
-  const deleteHabit = useCallback((objectiveId: string, habitId: string) => {
-    setObjectives((previous) =>
-      previous.map((objective) =>
-        objective.id === objectiveId
+      const nextObjectives = objectives.map((candidate) =>
+        candidate.id === objectiveId
           ? {
-              ...objective,
-              habits: objective.habits.filter(
-                (candidate) => candidate.id !== habitId,
+              ...candidate,
+              habits: candidate.habits.map((entry) =>
+                entry.id === habitId
+                  ? { ...entry, completed: !entry.completed }
+                  : entry,
               ),
             }
-          : objective,
-      ),
-    );
-    // A deleted task cannot still be the one being worked on.
-    setActiveHabitId((current) => (current === habitId ? null : current));
-  }, []);
+          : candidate,
+      );
+      setObjectives(nextObjectives);
+
+      const updated = nextObjectives.find(
+        (candidate) => candidate.id === objectiveId,
+      );
+
+      if (updated) {
+        void persistHabits(objectiveId, updated.habits, objectives);
+      }
+    },
+    [objectives, persistHabits],
+  );
+
+  const deleteHabit = useCallback(
+    (objectiveId: string, habitId: string) => {
+      const nextObjectives = objectives.map((candidate) =>
+        candidate.id === objectiveId
+          ? {
+              ...candidate,
+              habits: candidate.habits.filter((entry) => entry.id !== habitId),
+            }
+          : candidate,
+      );
+      setObjectives(nextObjectives);
+
+      // A deleted task cannot still be the one being worked on.
+      setActiveHabitId((current) => (current === habitId ? null : current));
+
+      const updated = nextObjectives.find(
+        (candidate) => candidate.id === objectiveId,
+      );
+
+      if (updated) {
+        void persistHabits(objectiveId, updated.habits, objectives);
+      }
+    },
+    [objectives, persistHabits],
+  );
 
   // One task is "being worked on" at a time; the completion checkbox is a
   // separate control and never changes this state.
@@ -97,19 +160,27 @@ export function useFocusDashboard(
       if (title.length === 0 || selectedObjectiveId.length === 0) {
         return;
       }
-      setObjectives((previous) =>
-        previous.map((objective) =>
-          objective.id === selectedObjectiveId
-            ? {
-                ...objective,
-                habits: [...objective.habits, createHabit(title)],
-              }
-            : objective,
-        ),
+
+      const nextObjectives = objectives.map((objective) =>
+        objective.id === selectedObjectiveId
+          ? {
+              ...objective,
+              habits: [...objective.habits, createHabit(title)],
+            }
+          : objective,
       );
+      setObjectives(nextObjectives);
       setDraft("");
+
+      const updated = nextObjectives.find(
+        (objective) => objective.id === selectedObjectiveId,
+      );
+
+      if (updated) {
+        void persistHabits(selectedObjectiveId, updated.habits, objectives);
+      }
     },
-    [draft, selectedObjectiveId],
+    [draft, objectives, selectedObjectiveId, persistHabits],
   );
 
   const metrics = useMemo(() => deriveFocusMetrics(objectives), [objectives]);
@@ -118,6 +189,7 @@ export function useFocusDashboard(
     draft,
     selectedObjectiveId,
     options: deriveQuickIngestOptions(objectives),
+    error: habitError,
     onDraftChange: setDraft,
     onObjectiveChange: setSelectedObjectiveId,
     onSubmit: submitDraft,

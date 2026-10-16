@@ -7,6 +7,7 @@ export function FocusQuickIngestForm({
   draft,
   selectedObjectiveId,
   options,
+  error,
   onDraftChange,
   onObjectiveChange,
   onSubmit,
@@ -35,6 +36,11 @@ export function FocusQuickIngestForm({
         selectedObjectiveId={selectedObjectiveId}
         onObjectiveChange={onObjectiveChange}
       />
+      {error ? (
+        <p role="alert" className="text-micro-legal text-error">
+          {error}
+        </p>
+      ) : null}
     </form>
   );
 }
