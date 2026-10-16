@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { createObjectiveRequestDto } from "@/application/use-cases/objectives/create-objective/create-objective.request.dto";
 import { deleteObjectiveRequestDto } from "@/application/use-cases/objectives/delete-objective/delete-objective.request.dto";
 import { updateObjectiveRequestDto } from "@/application/use-cases/objectives/update-objective/update-objective.request.dto";
+import type { UpdateObjectiveHabitsRequestDto } from "@/application/use-cases/objectives/update-objective-habits/update-objective-habits.request.dto";
+import { updateObjectiveHabitsRequestDto } from "@/application/use-cases/objectives/update-objective-habits/update-objective-habits.request.dto";
 import { createObjectivesContainer } from "@/lib/containers/objectives.container";
 import { createSupabaseServerClient } from "@/lib/shared/infrastructure/supabase.server";
 import {
@@ -104,6 +106,32 @@ export async function deleteObjectiveAction(
   const supabase = await createSupabaseServerClient();
   const { remove } = createObjectivesContainer(supabase);
   await remove.execute(parsed.data);
+
+  revalidatePath("/");
+  return { success: true };
+}
+
+export async function updateObjectiveHabitsAction(
+  input: UpdateObjectiveHabitsRequestDto,
+): Promise<ObjectiveActionState> {
+  const parsed = updateObjectiveHabitsRequestDto.safeParse(input);
+
+  if (!parsed.success) {
+    return {
+      error: parsed.error.issues[0]?.message ?? INVALID_OBJECTIVE_MESSAGE,
+    };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { updateHabits } = createObjectivesContainer(supabase);
+
+  try {
+    await updateHabits.execute(parsed.data);
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : INVALID_OBJECTIVE_MESSAGE,
+    };
+  }
 
   revalidatePath("/");
   return { success: true };
