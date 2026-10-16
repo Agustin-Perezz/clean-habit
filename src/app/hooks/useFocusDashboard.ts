@@ -19,6 +19,10 @@ import {
   type FocusObjective,
 } from "../mock-data";
 
+/** Shown when a subtask write never reaches the server (offline, aborted). */
+const HABIT_WRITE_FAILED_MESSAGE =
+  "Could not save the subtask. Check your connection and try again.";
+
 export function useFocusDashboard(
   initialObjectives: readonly FocusObjective[],
 ) {
@@ -57,20 +61,27 @@ export function useFocusDashboard(
       writeQueue.current = writeQueue.current
         .catch(() => undefined)
         .then(async () => {
-          const result = await updateObjectiveHabitsAction({
-            id: objectiveId,
-            habits: [...habits],
-          });
+          try {
+            const result = await updateObjectiveHabitsAction({
+              id: objectiveId,
+              habits: [...habits],
+            });
 
-          if (result.error) {
-            // The write failed: fall back to the last known server state so the
-            // board never shows a subtask that was not saved.
+            if (result.error) {
+              // The write was rejected: fall back to the last known server state
+              // so the board never shows a subtask that was not saved.
+              setObjectives(previousObjectives);
+              setHabitError(result.error);
+              return;
+            }
+
+            setHabitError(null);
+          } catch {
+            // The request never reached the server (aborted, offline). Same rule
+            // as a rejection: it must not look like it was saved.
             setObjectives(previousObjectives);
-            setHabitError(result.error);
-            return;
+            setHabitError(HABIT_WRITE_FAILED_MESSAGE);
           }
-
-          setHabitError(null);
         });
 
       return writeQueue.current;
