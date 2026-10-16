@@ -9,7 +9,11 @@ const TEST_PREFIX = `E2E-${RUN_ID}`;
 
 test.beforeAll(async () => {
   await seedObjectives({
-    titles: [`${TEST_PREFIX}-edit-card`, `${TEST_PREFIX}-delete-card`],
+    titles: [
+      `${TEST_PREFIX}-edit-card`,
+      `${TEST_PREFIX}-delete-card`,
+      `${TEST_PREFIX}-header-delete-card`,
+    ],
     category: `${TEST_PREFIX} Category`,
   });
 });
@@ -68,6 +72,19 @@ test("user can delete an objective from the edit dialog", async ({ page }) => {
 
   await page.getByRole("button", { name: `Edit ${title}` }).click();
   await page.getByRole("button", { name: "Delete objective" }).click();
+
+  await expect(page.getByText(title, { exact: true })).toBeHidden();
+});
+
+test("user can delete an objective straight from the card header", async ({
+  page,
+}) => {
+  const title = `${TEST_PREFIX}-header-delete-card`;
+
+  await page.goto("/");
+  await expect(page.getByText(title, { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: `Delete ${title}` }).click();
 
   await expect(page.getByText(title, { exact: true })).toBeHidden();
 });

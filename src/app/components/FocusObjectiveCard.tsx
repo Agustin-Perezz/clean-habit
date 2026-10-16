@@ -25,6 +25,7 @@ export function FocusObjectiveCard({
     <article className="objective-card bg-surface-container-lowest rounded-focus-2xl p-space-lg flex flex-col gap-space-md shadow-sm transition-all">
       <FocusObjectiveHeader
         category={objective.category}
+        objectiveId={objective.id}
         percent={stats.percent}
         priorityLabel={objective.priorityLabel}
         title={objective.title}
