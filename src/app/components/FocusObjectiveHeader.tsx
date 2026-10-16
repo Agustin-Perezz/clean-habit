@@ -1,6 +1,7 @@
-import { Button } from "@/components/ui/button";
+import { FocusObjectiveHeaderActions } from "./FocusObjectiveHeaderActions";
 
 type FocusObjectiveHeaderProps = {
+  objectiveId: string;
   category: string;
   priorityLabel?: string;
   title: string;
@@ -9,6 +10,7 @@ type FocusObjectiveHeaderProps = {
 };
 
 export function FocusObjectiveHeader({
+  objectiveId,
   category,
   priorityLabel,
   title,
@@ -32,20 +34,12 @@ export function FocusObjectiveHeader({
           {title}
         </h2>
       </div>
-      <div className="flex items-center gap-2">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          aria-label={`Edit ${title}`}
-          onClick={onEdit}
-        >
-          <span className="material-symbols-outlined text-[18px]">edit</span>
-        </Button>
-        <span className="card-percent font-caption-strong text-caption-strong text-primary-container">
-          {percent}%
-        </span>
-      </div>
+      <FocusObjectiveHeaderActions
+        objectiveId={objectiveId}
+        percent={percent}
+        title={title}
+        onEdit={onEdit}
+      />
     </div>
   );
 }
